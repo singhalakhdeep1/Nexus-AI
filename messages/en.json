@@ -1,0 +1,52 @@
+{
+    "common": {
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "create": "Create",
+        "loading": "Loading…",
+        "error": "Something went wrong",
+        "settings": "Settings",
+        "search": "Search",
+        "export": "Export",
+        "exportPDF": "Export PDF"
+    },
+    "dashboard": {
+        "welcome": "Welcome back, {name}",
+        "overview": "Overview",
+        "myTasks": "My Tasks",
+        "recentActivity": "Recent Activity"
+    },
+    "projects": {
+        "title": "Projects",
+        "createProject": "New Project",
+        "noProjects": "No projects yet",
+        "noProjectsHint": "Create your first project to get started.",
+        "dependencyGraph": "Dependency Graph",
+        "exportReport": "Export Report",
+        "completion": "Completion"
+    },
+    "tasks": {
+        "title": "Tasks",
+        "noTasks": "No tasks found.",
+        "createTask": "New Task",
+        "status": {
+            "todo": "To Do",
+            "in_progress": "In Progress",
+            "done": "Done",
+            "blocked": "Blocked"
+        },
+        "priority": {
+            "low": "Low",
+            "medium": "Medium",
+            "high": "High"
+        }
+    },
+    "auth": {
+        "signIn": "Sign In",
+        "signUp": "Sign Up",
+        "signOut": "Sign Out",
+        "email": "Email",
+        "password": "Password"
+    }
+}
