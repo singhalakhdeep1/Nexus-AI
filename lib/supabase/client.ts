@@ -7,10 +7,10 @@ let client: ReturnType<typeof createBrowserClient<Database>> | null = null;
 export function createClient() {
     if (client) return client;
 
-    client = createBrowserClient<Database>(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://default-project.supabase.co";
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "default-anon-key";
+
+    client = createBrowserClient<Database>(supabaseUrl, supabaseAnonKey);
 
     return client;
 }
