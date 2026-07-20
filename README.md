@@ -1,8 +1,6 @@
 # NexusFlow
 
-**Production-grade SaaS Project Management Platform** — Linear + Notion + Jira combined, built with Next.js 15, Supabase, TypeScript, and a modern component stack.
-
----
+A production-grade SaaS Project Management Platform combining features of Linear, Notion, and Jira. Built with Next.js 15, Supabase, TypeScript, and a modern component stack.
 
 ## Tech Stack
 
@@ -209,4 +207,4 @@ Add environment variables in Vercel dashboard. Set `NEXT_PUBLIC_SUPABASE_URL` an
 
 ## License
 
-MIT
+Proprietary - All rights reserved.
