@@ -1,0 +1,64 @@
+{
+  "buildCommand": "pnpm build",
+  "outputDirectory": ".next",
+  "devCommand": "pnpm dev",
+  "installCommand": "pnpm install",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "env": {
+    "OPENAI_API_KEY": {
+      "description": "OpenAI API key"
+    },
+    "HUGGINGFACE_API_KEY": {
+      "description": "Hugging Face API key"
+    },
+    "MLFLOW_TRACKING_URI": {
+      "description": "MLflow tracking server URI"
+    },
+    "MLFLOW_API_KEY": {
+      "description": "MLflow API key"
+    },
+    "REDIS_URL": {
+      "description": "Redis connection URL"
+    },
+    "DATABASE_URL": {
+      "description": "Database connection URL"
+    },
+    "SUPABASE_URL": {
+      "description": "Supabase project URL"
+    },
+    "SUPABASE_ANON_KEY": {
+      "description": "Supabase anonymous key"
+    }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ],
+  "functions": {
+    "app/api/**": {
+      "maxDuration": 60
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
+    }
+  ]
+}

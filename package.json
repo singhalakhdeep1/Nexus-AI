@@ -119,7 +119,18 @@
         "three": "^0.173.0",
         "web-vitals": "^4.2.4",
         "zod": "^3.24.1",
-        "zustand": "^5.0.3"
+        "zustand": "^5.0.3",
+        "langgraph": "^0.2.55",
+        "@langchain/langgraph": "^0.2.55",
+        "autogpt": "^0.5.0",
+        "crewai": "^0.1.0",
+        "memgpt": "^0.3.0",
+        "semantic-kernel": "^1.15.0",
+        "@huggingface/inference": "^2.8.0",
+        "@huggingface/transformers": "^3.0.0",
+        "mlflow": "^2.18.0",
+        "@cloudflare/workers-types": "^4.20241218.0",
+        "wrangler": "^3.94.0"
     },
     "devDependencies": {
         "@axe-core/react": "^4.10.2",
