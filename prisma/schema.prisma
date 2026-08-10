@@ -1,0 +1,110 @@
+// Nexus-AI Prisma Schema
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  name          String?
+  avatarUrl     String?
+  role          UserRole  @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  workspaces    WorkspaceMember[]
+  prompts       Prompt[]
+  chatSessions  ChatSession[]
+  apiKeys       ApiKey[]
+}
+
+enum UserRole {
+  ADMIN
+  USER
+  PRO
+}
+
+model Workspace {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  members     WorkspaceMember[]
+  prompts     Prompt[]
+  chatSessions ChatSession[]
+}
+
+model WorkspaceMember {
+  id          String   @id @default(uuid())
+  workspaceId String
+  userId      String
+  role        MemberRole @default(MEMBER)
+  createdAt   DateTime @default(now())
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+}
+
+enum MemberRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+model Prompt {
+  id          String   @id @default(uuid())
+  title       String
+  content     String
+  tags        String[]
+  isPublic    Boolean  @default(false)
+  authorId    String
+  workspaceId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  author    User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  workspace Workspace? @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+}
+
+model ChatSession {
+  id          String   @id @default(uuid())
+  title       String
+  model       String   @default("gemini-2.5-flash")
+  userId      String
+  workspaceId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  messages    ChatMessage[]
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace? @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
+}
+
+model ChatMessage {
+  id            String   @id @default(uuid())
+  chatSessionId String
+  role          String   // 'user' | 'assistant' | 'system'
+  content       String
+  tokens        Int      @default(0)
+  createdAt     DateTime @default(now())
+
+  session ChatSession @relation(fields: [chatSessionId], references: [id], onDelete: Cascade)
+}
+
+model ApiKey {
+  id        String   @id @default(uuid())
+  userId    String
+  key       String   @unique
+  name      String
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
