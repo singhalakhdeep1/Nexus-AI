@@ -1,6 +1,7 @@
 import { router } from "@/server/trpc";
 import { tasksRouter } from "./tasks";
 import { projectsRouter } from "./projects";
+import { authRouter } from "./auth";
 
 /**
  * Root tRPC router — combine all sub-routers here.
@@ -9,6 +10,7 @@ import { projectsRouter } from "./projects";
 export const appRouter = router({
     tasks: tasksRouter,
     projects: projectsRouter,
+    auth: authRouter,
 });
 
 export type AppRouter = typeof appRouter;
