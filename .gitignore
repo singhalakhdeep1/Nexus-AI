@@ -60,3 +60,4 @@ tmp
 
 # Wrangler
 .wrangler/
+tsconfig.tsbuildinfo
