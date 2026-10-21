@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { stripe, STRIPE_PRICE_IDS } from "@/lib/stripe/client";
+import { getStripe, STRIPE_PRICE_IDS } from "@/lib/stripe/client";
 import { z } from "zod";
 
 const bodySchema = z.object({
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     // Get or create Stripe customer
     let customerId = org.stripe_customer_id;
     if (!customerId) {
-        const customer = await stripe.customers.create({
+        const customer = await getStripe().customers.create({
             email: user.email,
             name: org.name,
             metadata: { org_id: orgId, user_id: user.id },
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     const priceId = STRIPE_PRICE_IDS[plan];
     if (!priceId) return NextResponse.json({ error: "Invalid plan" }, { status: 400 });
 
-    const session = await stripe.checkout.sessions.create({
+    const session = await getStripe().checkout.sessions.create({
         customer: customerId,
         mode: "subscription",
         line_items: [{ price: priceId, quantity: 1 }],

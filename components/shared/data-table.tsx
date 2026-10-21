@@ -21,7 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-    DropdownMenu, DropdownMenuCheckboxItem,
+    DropdownMenu, DropdownMenuItem,
     DropdownMenuContent, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
@@ -90,14 +90,13 @@ export function DataTable<TData, TValue>({
                             .getAllColumns()
                             .filter((col) => col.getCanHide())
                             .map((col) => (
-                                <DropdownMenuCheckboxItem
+                                <DropdownMenuItem
                                     key={col.id}
-                                    checked={col.getIsVisible()}
-                                    onCheckedChange={(v) => col.toggleVisibility(v)}
+                                    onClick={() => col.toggleVisibility(!col.getIsVisible())}
                                     className="capitalize text-sm"
                                 >
                                     {col.id}
-                                </DropdownMenuCheckboxItem>
+                                </DropdownMenuItem>
                             ))}
                     </DropdownMenuContent>
                 </DropdownMenu>

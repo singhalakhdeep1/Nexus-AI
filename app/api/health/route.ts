@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { sql } from "drizzle-orm";
-import { Redis } from "@upstash/redis";
+import { getRedis } from "@/lib/redis/client";
 
 /**
  * Health check endpoint — used by:
@@ -15,8 +15,6 @@ import { Redis } from "@upstash/redis";
  *
  * Pattern used by: Stripe, Linear, Vercel, GitHub, Shopify
  */
-
-const redis = Redis.fromEnv();
 
 interface HealthStatus {
     status: "healthy" | "degraded" | "unhealthy";
@@ -52,7 +50,7 @@ async function checkDatabase(): Promise<CheckResult> {
 async function checkRedis(): Promise<CheckResult> {
     const start = Date.now();
     try {
-        await redis.ping();
+        await getRedis().ping();
         return { status: "ok", latencyMs: Date.now() - start };
     } catch (err) {
         return {

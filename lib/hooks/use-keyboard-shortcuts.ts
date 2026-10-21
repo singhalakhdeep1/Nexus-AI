@@ -6,14 +6,14 @@ import { useUIStore } from "@/lib/stores/use-ui-store";
 type ShortcutHandler = (e: KeyboardEvent) => void;
 
 export function useKeyboardShortcuts(handlers?: Record<string, ShortcutHandler>) {
-    const { setCommandPaletteOpen, setCreateTaskDialogOpen } = useUIStore();
+    const { setCommandPaletteOpen, openCreateTask } = useUIStore();
 
     const defaultHandlers: Record<string, ShortcutHandler> = {
         // ⌘K / Ctrl+K — command palette
         "meta+k": (e) => { e.preventDefault(); setCommandPaletteOpen(true); },
         "ctrl+k": (e) => { e.preventDefault(); setCommandPaletteOpen(true); },
         // N — new task (not in input)
-        "n": () => setCreateTaskDialogOpen(true),
+        "n": () => openCreateTask(""),
         // Escape — handled by individual dialogs
         ...handlers,
     };

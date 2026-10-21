@@ -49,7 +49,7 @@ export function CreateTaskDialog({
     const onSubmit = async (data: CreateTaskInput) => {
         if (!projectId) return;
         try {
-            await createTask.mutateAsync({ ...data, project_id: projectId });
+            await createTask.mutateAsync({ ...data, reporter_id: "" } as any);
             reset();
             onClose();
         } catch { }
@@ -87,8 +87,8 @@ export function CreateTaskDialog({
                                         </SelectTrigger>
                                         <SelectContent>
                                             {TASK_STATUSES.map((s) => (
-                                                <SelectItem key={s.value} value={s.value}>
-                                                    {s.label}
+                                                <SelectItem key={s} value={s}>
+                                                    {s.replace(/_/g, " ")}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
@@ -109,8 +109,8 @@ export function CreateTaskDialog({
                                         </SelectTrigger>
                                         <SelectContent>
                                             {TASK_PRIORITIES.map((p) => (
-                                                <SelectItem key={p.value} value={p.value}>
-                                                    {p.label}
+                                                <SelectItem key={p} value={p}>
+                                                    {p.replace(/_/g, " ")}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>

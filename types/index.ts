@@ -226,12 +226,14 @@ export interface CreateProjectInput {
 }
 
 export interface DashboardStats {
-    total_tasks: number;
-    completed_tasks: number;
-    in_progress_tasks: number;
-    overdue_tasks: number;
-    completion_rate: number;
-    velocity: number; // tasks completed this sprint vs last
+    totalProjects: number;
+    totalTasks: number;
+    completedTasks: number;
+    inProgressTasks: number;
+    totalMembers: number;
+    completionRate: number;
+    overdueTasks?: number;
+    velocity?: number;
 }
 
 export type SortOrder = 'asc' | 'desc';

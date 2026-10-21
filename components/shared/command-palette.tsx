@@ -52,7 +52,7 @@ export function CommandPalette({ orgSlug, projects }: CommandPaletteProps) {
 
                         <Command.Group heading="Quick Actions" className="text-xs text-muted-foreground font-semibold px-2 py-1.5">
                             <Command.Item
-                                onSelect={() => { openCreateTask(undefined, undefined); setCommandPaletteOpen(false); }}
+                                onSelect={() => { openCreateTask(""); setCommandPaletteOpen(false); }}
                                 className="flex items-center gap-2.5 px-2 py-2 rounded-md cursor-pointer hover:bg-muted text-sm aria-selected:bg-muted"
                             >
                                 <Plus className="h-4 w-4 text-muted-foreground" />

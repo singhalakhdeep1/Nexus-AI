@@ -12,6 +12,7 @@ interface UIState {
     // Command palette
     isCommandPaletteOpen: boolean;
     setCommandPaletteOpen: (open: boolean) => void;
+    toggleCommandPalette: () => void;
 
     // Task creation modal
     isCreateTaskOpen: boolean;
@@ -32,6 +33,10 @@ interface UIState {
     // View mode
     viewMode: "board" | "list" | "timeline";
     setViewMode: (mode: "board" | "list" | "timeline") => void;
+
+    // Notifications
+    unreadNotifications: number;
+    setUnreadNotifications: (count: number) => void;
 }
 
 export const useUIStore = create<UIState>((set) => ({
@@ -41,6 +46,7 @@ export const useUIStore = create<UIState>((set) => ({
 
     isCommandPaletteOpen: false,
     setCommandPaletteOpen: (open) => set({ isCommandPaletteOpen: open }),
+    toggleCommandPalette: () => set((s) => ({ isCommandPaletteOpen: !s.isCommandPaletteOpen })),
 
     isCreateTaskOpen: false,
     createTaskProjectId: null,
@@ -68,4 +74,7 @@ export const useUIStore = create<UIState>((set) => ({
 
     viewMode: "board",
     setViewMode: (mode) => set({ viewMode: mode }),
+
+    unreadNotifications: 0,
+    setUnreadNotifications: (count) => set({ unreadNotifications: count }),
 }));

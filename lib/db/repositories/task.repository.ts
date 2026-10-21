@@ -4,6 +4,7 @@
 // Only repositories do. This is the Clean Architecture dependency rule.
 
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/types/database";
 import { Task, type TaskRow, type CreateTaskInput, type UpdateTaskInput } from "@/lib/domain/entities/task.entity";
 import { TaskStatus } from "@/lib/domain/value-objects/task-status";
 import { NotFoundError } from "@/lib/domain/errors";
@@ -23,7 +24,7 @@ export interface PaginatedTasks {
 }
 
 export class TaskRepository {
-    constructor(private readonly db: SupabaseClient) { }
+    constructor(private readonly db: SupabaseClient<any>) { }
 
     // ── Queries ───────────────────────────────────────────────────────────────
 

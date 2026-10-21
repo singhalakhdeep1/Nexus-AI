@@ -163,7 +163,7 @@ const resolvers = {
     },
 };
 
-const schema = createSchema({ typeDefs, resolvers });
+const schema = createSchema({ typeDefs, resolvers }) as any;
 
 const yoga = createYoga({
     schema,

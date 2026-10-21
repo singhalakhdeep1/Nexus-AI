@@ -1,7 +1,9 @@
+import type React from "react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { formatDistanceToNow, format, isToday, isYesterday } from "date-fns";
 import type { TaskPriority, TaskStatus } from "@/types";
+import { Minus, AlertCircle, ArrowUp, ArrowDown, Circle, Timer, Eye, CheckCircle2, XCircle, CircleDot } from "lucide-react";
 
 // Tailwind class merger
 export function cn(...inputs: ClassValue[]) {
@@ -33,13 +35,13 @@ export function formatShortDate(date: string | Date): string {
 
 export const PRIORITY_CONFIG: Record<
     TaskPriority,
-    { label: string; color: string; bgColor: string; icon: string }
+    { label: string; color: string; bgColor: string; icon: React.ComponentType<{ className?: string }> }
 > = {
-    no_priority: { label: "No Priority", color: "text-muted-foreground", bgColor: "bg-muted", icon: "minus" },
-    urgent: { label: "Urgent", color: "text-red-500", bgColor: "bg-red-50 dark:bg-red-950", icon: "alert-circle" },
-    high: { label: "High", color: "text-orange-500", bgColor: "bg-orange-50 dark:bg-orange-950", icon: "arrow-up" },
-    medium: { label: "Medium", color: "text-yellow-500", bgColor: "bg-yellow-50 dark:bg-yellow-950", icon: "minus" },
-    low: { label: "Low", color: "text-blue-500", bgColor: "bg-blue-50 dark:bg-blue-950", icon: "arrow-down" },
+    no_priority: { label: "No Priority", color: "text-muted-foreground", bgColor: "bg-muted", icon: Minus },
+    urgent: { label: "Urgent", color: "text-red-500", bgColor: "bg-red-50 dark:bg-red-950", icon: AlertCircle },
+    high: { label: "High", color: "text-orange-500", bgColor: "bg-orange-50 dark:bg-orange-950", icon: ArrowUp },
+    medium: { label: "Medium", color: "text-yellow-500", bgColor: "bg-yellow-50 dark:bg-yellow-950", icon: Minus },
+    low: { label: "Low", color: "text-blue-500", bgColor: "bg-blue-50 dark:bg-blue-950", icon: ArrowDown },
 };
 
 // ============================================================
@@ -48,14 +50,14 @@ export const PRIORITY_CONFIG: Record<
 
 export const STATUS_CONFIG: Record<
     TaskStatus,
-    { label: string; color: string; bgColor: string; borderColor: string }
+    { label: string; color: string; bgColor: string; borderColor: string; icon: React.ComponentType<{ className?: string }> }
 > = {
-    backlog: { label: "Backlog", color: "text-slate-500", bgColor: "bg-slate-100 dark:bg-slate-800", borderColor: "border-slate-400" },
-    todo: { label: "Todo", color: "text-foreground", bgColor: "bg-white dark:bg-slate-900", borderColor: "border-slate-400" },
-    in_progress: { label: "In Progress", color: "text-blue-600", bgColor: "bg-blue-50 dark:bg-blue-950", borderColor: "border-blue-400" },
-    in_review: { label: "In Review", color: "text-purple-600", bgColor: "bg-purple-50 dark:bg-purple-950", borderColor: "border-purple-400" },
-    done: { label: "Done", color: "text-green-600", bgColor: "bg-green-50 dark:bg-green-950", borderColor: "border-green-400" },
-    cancelled: { label: "Cancelled", color: "text-slate-400", bgColor: "bg-slate-50 dark:bg-slate-900", borderColor: "border-slate-300" },
+    backlog: { label: "Backlog", color: "text-slate-500", bgColor: "bg-slate-100 dark:bg-slate-800", borderColor: "border-slate-400", icon: CircleDot },
+    todo: { label: "Todo", color: "text-foreground", bgColor: "bg-white dark:bg-slate-900", borderColor: "border-slate-400", icon: Circle },
+    in_progress: { label: "In Progress", color: "text-blue-600", bgColor: "bg-blue-50 dark:bg-blue-950", borderColor: "border-blue-400", icon: Timer },
+    in_review: { label: "In Review", color: "text-purple-600", bgColor: "bg-purple-50 dark:bg-purple-950", borderColor: "border-purple-400", icon: Eye },
+    done: { label: "Done", color: "text-green-600", bgColor: "bg-green-50 dark:bg-green-950", borderColor: "border-green-400", icon: CheckCircle2 },
+    cancelled: { label: "Cancelled", color: "text-slate-400", bgColor: "bg-slate-50 dark:bg-slate-900", borderColor: "border-slate-300", icon: XCircle },
 };
 
 // ============================================================

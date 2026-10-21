@@ -1,8 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import OpenAI from "openai";
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+import { getOpenAI } from "@/lib/openai/client";
 
 export async function POST(req: NextRequest) {
     const supabase = await createClient();
@@ -20,7 +18,7 @@ export async function POST(req: NextRequest) {
     if (!query || !orgId) return NextResponse.json({ error: "query and orgId required" }, { status: 400 });
 
     // Generate embedding
-    const embeddingRes = await openai.embeddings.create({
+    const embeddingRes = await getOpenAI().embeddings.create({
         model: "text-embedding-3-small",
         input: query,
     });
@@ -47,3 +45,4 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ results: results ?? [], source: "vector" });
 }
+

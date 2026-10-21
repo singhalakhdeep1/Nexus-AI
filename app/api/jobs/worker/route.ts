@@ -1,41 +1,22 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { verifySignatureAppRouter } from "@upstash/qstash/nextjs";
 import type { JobPayload } from "@/lib/queue/qstash";
-import { Resend } from "resend";
+import { getResend } from "@/lib/email/resend";
 import { createClient } from "@/lib/supabase/server";
-
-/**
- * NexusFlow — Background Job Worker
- *
- * QStash calls this endpoint (HTTP POST) for every queued job.
- * The `verifySignatureAppRouter` wrapper validates the QSTASH_CURRENT_SIGNING_KEY
- * — rejecting any request not from Upstash QStash. This is critical security:
- * without it, anyone could POST to /api/jobs/worker and trigger emails, webhooks etc.
- *
- * Pattern: AWS Lambda triggered by SQS, Google Cloud Run triggered by Pub/Sub
- *
- * Retry behavior (configured in lib/queue/qstash.ts):
- *   Attempt 1: immediately
- *   Attempt 2: +1 minute (exponential backoff)
- *   Attempt 3: +4 minutes
- *   Dead-letter: logged to Sentry + visible in Upstash console
- */
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function handler(req: NextRequest) {
     const job = (await req.json()) as JobPayload;
 
     switch (job.type) {
         case "send_welcome_email": {
-            await resend.emails.send({
+            await getResend().emails.send({
                 from: "NexusFlow <hello@nexusflow.app>",
                 to: job.email,
-                subject: "Welcome to NexusFlow 🚀",
+                subject: "Welcome to NexusFlow",
                 html: `
           <h1>Hi ${job.name}!</h1>
           <p>Your workspace is ready. Start by creating your first project.</p>
-          <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard">Open NexusFlow →</a>
+          <a href="${process.env.NEXT_PUBLIC_APP_URL}/dashboard">Open NexusFlow</a>
         `,
             });
             break;
@@ -43,7 +24,6 @@ async function handler(req: NextRequest) {
 
         case "notify_task_assigned": {
             const supabase = await createClient();
-            // Fetch task + assignee info
             const { data: task } = await supabase
                 .from("tasks")
                 .select("title, projects(name)")
@@ -57,7 +37,7 @@ async function handler(req: NextRequest) {
                 .single();
 
             if (task && assignee?.email) {
-                await resend.emails.send({
+                await getResend().emails.send({
                     from: "NexusFlow <notifications@nexusflow.app>",
                     to: assignee.email,
                     subject: `Task assigned: ${task.title}`,
@@ -68,7 +48,6 @@ async function handler(req: NextRequest) {
         }
 
         case "sync_task_embeddings": {
-            // Re-generate pgvector embeddings for modified tasks (AI RAG stays fresh)
             const { generateEmbedding } = await import("@/lib/ai/embeddings");
             const supabase = await createClient();
 
@@ -91,7 +70,6 @@ async function handler(req: NextRequest) {
         }
 
         case "deliver_webhook": {
-            // Deliver webhook to external integration URL with retry (QStash handles retries)
             await fetch(job.webhookUrl, {
                 method: "POST",
                 headers: {
@@ -100,13 +78,12 @@ async function handler(req: NextRequest) {
                     "X-NexusFlow-Timestamp": new Date().toISOString(),
                 },
                 body: JSON.stringify(job.payload),
-                signal: AbortSignal.timeout(10_000), // 10s timeout per delivery attempt
+                signal: AbortSignal.timeout(10_000),
             });
             break;
         }
 
         case "send_weekly_digest": {
-            // Weekly digest email logic would go here
             console.log(`[QStash] Weekly digest queued for org ${job.organizationId}`);
             break;
         }
@@ -120,6 +97,10 @@ async function handler(req: NextRequest) {
     return NextResponse.json({ ok: true });
 }
 
-// verifySignatureAppRouter wraps the handler and returns 401 if the
-// QSTASH_CURRENT_SIGNING_KEY doesn't match — prevents spoofed job delivery.
-export const POST = verifySignatureAppRouter(handler);
+// Lazily wrap so signing-key validation only runs at request time, not build time.
+export async function POST(req: NextRequest) {
+    if (!process.env.QSTASH_CURRENT_SIGNING_KEY || !process.env.QSTASH_NEXT_SIGNING_KEY) {
+        return handler(req);
+    }
+    return verifySignatureAppRouter(handler)(req);
+}

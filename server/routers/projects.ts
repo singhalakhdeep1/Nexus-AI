@@ -79,7 +79,7 @@ export const projectsRouter = router({
         .mutation(async ({ ctx, input }) => {
             try {
                 const useCase = new CreateProjectUseCase(new ProjectRepository(ctx.supabase));
-                const result = await useCase.execute({ ...input, requesterId: ctx.user.id });
+                const result = await useCase.execute({ ...input, organizationId: input.orgId, requesterId: ctx.user.id });
                 return result.project.toRow();
             } catch (err) { return mapDomainError(err); }
         }),

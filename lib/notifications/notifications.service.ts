@@ -17,7 +17,7 @@ export class NotificationsService {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 
-  async createNotification(userId: string, notification: Omit<Notification, 'id' | 'read' | 'createdAt'>) {
+  async createNotification(userId: string, notification: Omit<Notification, 'id' | 'userId' | 'read' | 'createdAt'>) {
     const { data, error } = await this.supabase
       .from('notifications')
       .insert({
@@ -116,8 +116,8 @@ export class NotificationsService {
     return this.createNotification(assigneeId, {
       type: 'task_assigned',
       title: 'Task Assigned',
-      message: `${assigner.name} assigned you to task: ${task.title}`,
-      data: { taskId, projectId: task.project_id },
+      message: `${assigner?.name ?? 'Someone'} assigned you to task: ${task?.title ?? taskId}`,
+      data: { taskId, projectId: task?.project_id },
     });
   }
 
@@ -134,12 +134,12 @@ export class NotificationsService {
       .select('user_id')
       .eq('project_id', projectId);
 
-    for (const member of members) {
+    for (const member of (members ?? [])) {
       if (member.user_id !== userId) {
         await this.createNotification(member.user_id, {
           type: 'task_completed',
           title: 'Task Completed',
-          message: `Task "${task.title}" has been completed`,
+          message: `Task "${task?.title ?? taskId}" has been completed`,
           data: { taskId, projectId },
         });
       }
@@ -156,7 +156,7 @@ export class NotificationsService {
     return this.createNotification(userId, {
       type: 'mention',
       title: 'You were mentioned',
-      message: `${mentioner.name} mentioned you in a comment`,
+      message: `${mentioner?.name ?? 'Someone'} mentioned you in a comment`,
       data: { taskId, comment },
     });
   }
@@ -171,7 +171,7 @@ export class NotificationsService {
     return this.createNotification(userId, {
       type: 'deadline_reminder',
       title: 'Deadline Approaching',
-      message: `Task "${task.title}" is due on ${new Date(task.due_date).toLocaleDateString()}`,
+      message: `Task "${task?.title ?? taskId}" is due on ${task?.due_date ? new Date(task.due_date).toLocaleDateString() : 'soon'}`,
       data: { taskId },
     });
   }

@@ -14,7 +14,7 @@ import { AlertTriangle, RefreshCw, Kanban, BarChart3, FileEdit } from "lucide-re
 import { Button } from "@/components/ui/button";
 
 function ErrorFallback({ error, resetErrorBoundary, icon: Icon, label }: FallbackProps & {
-    icon: React.ElementType;
+    icon: React.ComponentType<{ className?: string }>;
     label: string;
 }) {
     return (

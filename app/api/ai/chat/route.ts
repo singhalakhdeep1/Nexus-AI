@@ -1,8 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import OpenAI from "openai";
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+import { getOpenAI } from "@/lib/openai/client";
 
 export async function POST(req: NextRequest) {
     const supabase = await createClient();
@@ -21,7 +19,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "messages array required" }, { status: 400 });
     }
 
-    const systemPrompt = `You are NexusAI, an intelligent project management assistant integrated into NexusFlow — a powerful SaaS PM tool. You help engineering teams manage tasks, plan sprints, write descriptions, and improve productivity.
+    const systemPrompt = `You are NexusAI, an intelligent project management assistant integrated into NexusFlow â€” a powerful SaaS PM tool. You help engineering teams manage tasks, plan sprints, write descriptions, and improve productivity.
 
 ${projectContext ? `Current project context: ${projectContext}` : ""}
 
@@ -35,7 +33,7 @@ You can:
 
 Be concise, practical, and engineering-focused. Format responses with markdown when helpful.`;
 
-    const stream = await openai.chat.completions.create({
+    const stream = await getOpenAI().chat.completions.create({
         model: "gpt-4o-mini",
         stream: true,
         messages: [
@@ -71,3 +69,4 @@ Be concise, practical, and engineering-focused. Format responses with markdown w
         },
     });
 }
+

@@ -37,7 +37,7 @@ export function SprintBoard({ project, sprints: initialSprints, tasks, orgSlug }
     const handleStartSprint = async (sprintId: string) => {
         await updateSprint.mutateAsync({
             id: sprintId,
-            status: "active",
+            is_active: true,
             start_date: new Date().toISOString(),
         });
         router.refresh();
@@ -46,8 +46,8 @@ export function SprintBoard({ project, sprints: initialSprints, tasks, orgSlug }
     const handleCompleteSprint = async (sprintId: string) => {
         await updateSprint.mutateAsync({
             id: sprintId,
-            status: "completed",
-            end_date: new Date().toISOString(),
+            is_active: false,
+            completed_at: new Date().toISOString(),
         });
         router.refresh();
     };

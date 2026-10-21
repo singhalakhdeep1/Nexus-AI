@@ -64,9 +64,9 @@ export class ReportsService {
     const { data: tasks, error: queryError } = await query;
     if (queryError) throw queryError;
 
-    let reportData = tasks;
+    let reportData: any[] = (tasks ?? []) as any[];
     if (config.group_by && config.group_by.length > 0) {
-      reportData = this.groupData(tasks, config.group_by);
+      reportData = this.groupData(reportData, config.group_by);
     }
 
     if (config.aggregations && config.aggregations.length > 0) {
@@ -146,8 +146,8 @@ export class ReportsService {
 
     return Object.entries(grouped).map(([key, items]) => ({
       group: key,
-      items,
-      count: items.length,
+      items: items as any[],
+      count: (items as any[]).length,
     }));
   }
 
@@ -209,20 +209,22 @@ export class ReportsService {
       .select('*')
       .eq('project_id', projectId);
 
+    const taskList = (tasks ?? []) as any[];
+    const sprintList = (sprints ?? []) as any[];
     const summary = {
-      totalTasks: tasks.length,
-      completedTasks: tasks.filter((t: any) => t.status === 'done').length,
-      inProgressTasks: tasks.filter((t: any) => t.status === 'in_progress').length,
-      todoTasks: tasks.filter((t: any) => t.status === 'todo').length,
-      totalSprints: sprints.length,
-      activeSprints: sprints.filter((s: any) => {
+      totalTasks: taskList.length,
+      completedTasks: taskList.filter((t: any) => t.status === 'done').length,
+      inProgressTasks: taskList.filter((t: any) => t.status === 'in_progress').length,
+      todoTasks: taskList.filter((t: any) => t.status === 'todo').length,
+      totalSprints: sprintList.length,
+      activeSprints: sprintList.filter((s: any) => {
         const now = new Date();
         return new Date(s.start_date) <= now && new Date(s.end_date) >= now;
       }).length,
       tasksByPriority: {
-        high: tasks.filter((t: any) => t.priority === 'high').length,
-        medium: tasks.filter((t: any) => t.priority === 'medium').length,
-        low: tasks.filter((t: any) => t.priority === 'low').length,
+        high: taskList.filter((t: any) => t.priority === 'high').length,
+        medium: taskList.filter((t: any) => t.priority === 'medium').length,
+        low: taskList.filter((t: any) => t.priority === 'low').length,
       },
     };
 

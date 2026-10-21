@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { resend, EMAIL_FROM } from "@/lib/email/resend";
+import { getResend, EMAIL_FROM } from "@/lib/email/resend";
 import { renderInviteEmail } from "@/lib/email/templates";
 import { z } from "zod";
 
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
         inviteUrl: linkData.properties.action_link,
     });
 
-    const { error: emailError } = await resend.emails.send({
+    const { error: emailError } = await getResend().emails.send({
         from: EMAIL_FROM,
         to: email,
         subject,

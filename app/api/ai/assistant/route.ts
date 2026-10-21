@@ -3,16 +3,18 @@ import { streamText } from "ai";
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
+import { getRedis } from "@/lib/redis/client";
 import { retrieveContext } from "@/lib/ai/rag";
 import { nexusflowTools } from "@/lib/ai/tools";
 import { openAIBreaker } from "@/lib/resilience/circuit-breaker";
 
-const ratelimit = new Ratelimit({
-    redis: Redis.fromEnv(),
-    limiter: Ratelimit.slidingWindow(30, "1m"),
-    analytics: true,
-});
+function getRatelimit() {
+    return new Ratelimit({
+        redis: getRedis(),
+        limiter: Ratelimit.slidingWindow(30, "1m"),
+        analytics: true,
+    });
+}
 
 /**
  * AI assistant route — "Ask your workspace"
@@ -27,7 +29,7 @@ export async function POST(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return new Response("Unauthorized", { status: 401 });
 
-    const { success } = await ratelimit.limit(user.id);
+    const { success } = await getRatelimit().limit(user.id);
     if (!success) return new Response("Too many requests", { status: 429 });
 
     const { messages, projectId } = await req.json();
@@ -53,13 +55,13 @@ RULES:
 - Today is ${new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}.`;
 
     return openAIBreaker.call(
-        () => {
+        async () => {
             const result = streamText({
                 model: openai("gpt-4o-mini"),
                 system: systemPrompt,
                 messages,
                 tools: nexusflowTools,
-                maxSteps: 5, // allow multi-step agentic tool chains
+                maxSteps: 5,
                 temperature: 0.3,
             });
             return result.toDataStreamResponse();

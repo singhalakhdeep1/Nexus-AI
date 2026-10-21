@@ -1,9 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import OpenAI from "openai";
+import { getOpenAI } from "@/lib/openai/client";
 import { z } from "zod";
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const bodySchema = z.object({
     type: z.enum(["task", "project", "sprint"]),
@@ -40,7 +38,7 @@ export async function POST(req: NextRequest) {
         content = `Project: ${data.name}\nDescription: ${data.description || "None"}\nStatus: ${data.status}\nRecent tasks: ${taskSummary}`;
     }
 
-    const completion = await openai.chat.completions.create({
+    const completion = await getOpenAI().chat.completions.create({
         model: "gpt-4o-mini",
         messages: [
             {
@@ -55,3 +53,4 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ summary: completion.choices[0].message.content });
 }
+

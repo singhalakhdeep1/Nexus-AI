@@ -189,7 +189,7 @@ export function ProjectBoard({ project, initialTasks, members, labels, orgSlug }
                 open={isCreateTaskOpen}
                 onClose={closeCreateTask}
                 projectId={project.id}
-                defaultStatus={createTaskStatus}
+                defaultStatus={createTaskStatus as any}
                 members={allMembers}
                 labels={labels}
             />

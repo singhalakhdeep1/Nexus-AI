@@ -1,11 +1,12 @@
 // ─── Project Repository ───────────────────────────────────────────────────────
 
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/types/database";
 import { Project, type ProjectRow } from "@/lib/domain/entities/project.entity";
 import { NotFoundError, ConflictError } from "@/lib/domain/errors";
 
 export class ProjectRepository {
-    constructor(private readonly db: SupabaseClient) { }
+    constructor(private readonly db: SupabaseClient<any>) { }
 
     // ── Queries ───────────────────────────────────────────────────────────────
 

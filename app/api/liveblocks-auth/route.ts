@@ -2,15 +2,16 @@ import { Liveblocks } from "@liveblocks/node";
 import { NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
-const liveblocks = new Liveblocks({
-    secret: process.env.LIVEBLOCKS_SECRET_KEY!,
-});
+let _liveblocks: Liveblocks | null = null;
+function getLiveblocks() {
+    if (!_liveblocks) {
+        const secret = process.env.LIVEBLOCKS_SECRET_KEY;
+        if (!secret) throw new Error("LIVEBLOCKS_SECRET_KEY is not set");
+        _liveblocks = new Liveblocks({ secret });
+    }
+    return _liveblocks;
+}
 
-/**
- * Liveblocks auth endpoint.
- * Issues a token scoped to the requested room (project Kanban board).
- * Room format: "project:<projectId>"
- */
 export async function POST(req: NextRequest) {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -19,7 +20,6 @@ export async function POST(req: NextRequest) {
     const { room } = await req.json();
     if (!room) return new Response("room required", { status: 400 });
 
-    // Verify user has access to the project
     const projectId = room.replace("project:", "");
     const { data: member } = await supabase
         .from("project_members")
@@ -36,8 +36,7 @@ export async function POST(req: NextRequest) {
         .eq("id", user.id)
         .single();
 
-    // Issue token with user metadata — shown in live cursors
-    const { body, status } = await liveblocks.identifyUser(
+    const { body, status } = await getLiveblocks().identifyUser(
         {
             userId: user.id,
             groupIds: [projectId],
@@ -54,7 +53,6 @@ export async function POST(req: NextRequest) {
     return new Response(body, { status });
 }
 
-/** Deterministic color from user ID — consistent across sessions */
 function generateUserColor(userId: string): string {
     const colors = [
         "#ef4444", "#f97316", "#eab308", "#22c55e",

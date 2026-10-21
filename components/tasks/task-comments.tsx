@@ -19,11 +19,11 @@ interface TaskCommentsProps {
 export function TaskComments({ comments, taskId, projectId, currentUserId }: TaskCommentsProps) {
     const [body, setBody] = useState("");
     const [isOpen, setIsOpen] = useState(false);
-    const addComment = useAddComment(projectId);
+    const addComment = useAddComment(taskId);
 
     const handleSubmit = async () => {
         if (!body.trim() || body === "<p></p>") return;
-        await addComment.mutateAsync({ taskId, body });
+        await addComment.mutateAsync({ content: body, author_id: currentUserId });
         setBody("");
         setIsOpen(false);
     };

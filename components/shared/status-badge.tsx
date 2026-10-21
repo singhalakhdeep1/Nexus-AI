@@ -4,10 +4,11 @@ import type { TaskStatus } from "@/types";
 
 interface StatusBadgeProps {
     status: TaskStatus;
+    compact?: boolean;
     className?: string;
 }
 
-export function StatusBadge({ status, className }: StatusBadgeProps) {
+export function StatusBadge({ status, compact: _compact, className }: StatusBadgeProps) {
     const config = STATUS_CONFIG[status];
     if (!config) return null;
 

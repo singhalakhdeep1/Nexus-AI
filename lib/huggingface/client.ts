@@ -39,7 +39,7 @@ export async function extractEntities(text: string, model: string = 'dbmdz/bert-
 
 // Question answering
 export async function answerQuestion(question: string, context: string, model: string = 'deepset/roberta-base-squad2') {
-  const result = await hf.questionAnswer({
+  const result = await hf.questionAnswering({
     model,
     inputs: {
       question,
@@ -71,7 +71,7 @@ export async function translateText(text: string, model: string = 'facebook/mbar
     inputs: text,
   });
 
-  return result.translation_text;
+  return (result as any).translation_text as string;
 }
 
 // Image classification

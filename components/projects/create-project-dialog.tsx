@@ -36,7 +36,7 @@ export function CreateProjectDialog({ open, onOpenChange, orgId, orgSlug }: Crea
         formState: { errors },
     } = useForm<CreateProjectInput>({
         resolver: zodResolver(createProjectSchema),
-        defaultValues: { color: PROJECT_COLORS[0].value, status: "active" },
+        defaultValues: { color: PROJECT_COLORS[0] },
     });
 
     const selectedColor = watch("color");
@@ -88,15 +88,14 @@ export function CreateProjectDialog({ open, onOpenChange, orgId, orgSlug }: Crea
                         <div className="flex flex-wrap gap-2">
                             {PROJECT_COLORS.map((c) => (
                                 <button
-                                    key={c.value}
+                                    key={c}
                                     type="button"
-                                    onClick={() => setValue("color", c.value)}
+                                    onClick={() => setValue("color", c)}
                                     className={cn(
                                         "h-7 w-7 rounded-full border-2 transition-transform hover:scale-110",
-                                        selectedColor === c.value ? "border-foreground scale-110" : "border-transparent"
+                                        selectedColor === c ? "border-foreground scale-110" : "border-transparent"
                                     )}
-                                    style={{ backgroundColor: c.value }}
-                                    title={c.label}
+                                    style={{ backgroundColor: c }}
                                 />
                             ))}
                         </div>

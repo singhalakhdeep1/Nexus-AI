@@ -1,8 +1,6 @@
-import { createClient } from "@/lib/supabase/server";
+﻿import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
-import OpenAI from "openai";
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+import { getOpenAI } from "@/lib/openai/client";
 
 export async function POST(req: NextRequest) {
     const supabase = await createClient();
@@ -16,7 +14,7 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-        const completion = await openai.chat.completions.create({
+        const completion = await getOpenAI().chat.completions.create({
             model: "gpt-4o-mini",
             messages: [
                 {
@@ -45,3 +43,4 @@ Return 3-8 tasks. No markdown, only valid JSON array.`,
         return NextResponse.json({ error: "AI generation failed" }, { status: 500 });
     }
 }
+

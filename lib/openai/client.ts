@@ -1,9 +1,12 @@
 import OpenAI from "openai";
 
-/**
- * Shared OpenAI client instance.
- * All AI routes import from here so we have a single configuration point.
- */
-export const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+let _openai: OpenAI | null = null;
+
+export function getOpenAI(): OpenAI {
+    if (!_openai) {
+        const key = process.env.OPENAI_API_KEY;
+        if (!key) throw new Error("OPENAI_API_KEY environment variable is not set");
+        _openai = new OpenAI({ apiKey: key });
+    }
+    return _openai;
+}

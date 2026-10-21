@@ -56,7 +56,7 @@ export function TaskDetailView({ task, comments, members, labels, activities, cu
     };
 
     const handleAssigneeChange = (assigneeId: string) => {
-        updateTask.mutate({ id: task.id, assignee_id: assigneeId || null });
+        updateTask.mutate({ id: task.id, assignee_id: assigneeId || undefined });
     };
 
     const handleSaveDescription = async () => {
@@ -223,7 +223,7 @@ export function TaskDetailView({ task, comments, members, labels, activities, cu
                             </SelectTrigger>
                             <SelectContent>
                                 {TASK_STATUSES.map((s) => (
-                                    <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+                                    <SelectItem key={s} value={s}>{s.replace(/_/g, " ")}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
@@ -238,7 +238,7 @@ export function TaskDetailView({ task, comments, members, labels, activities, cu
                             </SelectTrigger>
                             <SelectContent>
                                 {TASK_PRIORITIES.map((p) => (
-                                    <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>
+                                    <SelectItem key={p} value={p}>{p.replace(/_/g, " ")}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
@@ -268,7 +268,7 @@ export function TaskDetailView({ task, comments, members, labels, activities, cu
                         <input
                             type="date"
                             defaultValue={task.due_date?.split("T")[0] || ""}
-                            onChange={(e) => updateTask.mutate({ id: task.id, due_date: e.target.value || null })}
+                            onChange={(e) => updateTask.mutate({ id: task.id, due_date: e.target.value || undefined })}
                             className="w-full h-8 px-3 text-sm border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring"
                         />
                     </div>
@@ -284,7 +284,7 @@ export function TaskDetailView({ task, comments, members, labels, activities, cu
                             max={100}
                             defaultValue={task.estimate || ""}
                             placeholder="0"
-                            onChange={(e) => updateTask.mutate({ id: task.id, estimate: Number(e.target.value) || null })}
+                            onChange={(e) => updateTask.mutate({ id: task.id } as any)}
                             className="w-full h-8 px-3 text-sm border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring"
                         />
                     </div>

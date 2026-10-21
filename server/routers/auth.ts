@@ -70,7 +70,7 @@ export const authRouter = router({
   }),
 
   getSession: protectedProcedure.query(async ({ ctx }) => {
-    return ctx.session;
+    return ctx.user;
   }),
 
   resetPassword: publicProcedure

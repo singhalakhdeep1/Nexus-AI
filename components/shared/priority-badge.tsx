@@ -5,14 +5,15 @@ import type { TaskPriority } from "@/types";
 interface PriorityBadgeProps {
     priority: TaskPriority;
     compact?: boolean;
+    iconOnly?: boolean;
     className?: string;
 }
 
-export function PriorityBadge({ priority, compact, className }: PriorityBadgeProps) {
+export function PriorityBadge({ priority, compact, iconOnly, className }: PriorityBadgeProps) {
     const config = PRIORITY_CONFIG[priority];
     if (!config) return null;
 
-    if (compact) {
+    if (compact || iconOnly) {
         return (
             <span
                 className={cn("h-4 w-4 rounded-sm flex items-center justify-center text-xs shrink-0", config.bgColor, className)}

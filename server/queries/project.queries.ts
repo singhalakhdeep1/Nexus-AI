@@ -4,6 +4,7 @@
 // shaped exactly for the UI (lists, cards, settings pages).
 
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/types/database";
 
 export interface ProjectViewModel {
     id: string;
@@ -32,7 +33,7 @@ export interface ProjectMemberView {
 }
 
 export class ProjectQueries {
-    constructor(private readonly db: SupabaseClient) { }
+    constructor(private readonly db: SupabaseClient<any>) { }
 
     async listForOrganization(orgId: string, viewerId: string): Promise<ProjectViewModel[]> {
         const [projectsResult, membershipResult] = await Promise.all([

@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+﻿import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { openai } from "@/lib/openai/client";
+import { getOpenAI } from "@/lib/openai/client";
 
 export async function POST(req: NextRequest) {
     const supabase = await createClient();
@@ -63,7 +63,7 @@ export async function POST(req: NextRequest) {
 
         const systemPrompt = systemPrompts[type as keyof typeof systemPrompts] || systemPrompts['task-description'];
 
-        const response = await openai.chat.completions.create({
+        const response = await getOpenAI().chat.completions.create({
             model: "gpt-4o-mini",
             messages: [
                 { role: "system", content: systemPrompt },
@@ -84,3 +84,4 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Failed to generate content" }, { status: 500 });
     }
 }
+

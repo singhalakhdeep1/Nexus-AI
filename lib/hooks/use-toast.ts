@@ -111,9 +111,14 @@ function useToast() {
         };
     }, []);
 
+    const addToast = (opts: { title?: string; description?: string; type?: "success" | "error" | "info" }) => {
+        toast({ title: opts.title, description: opts.description, variant: opts.type === "error" ? "destructive" : "default" });
+    };
+
     return {
         ...state,
         toast,
+        addToast,
         dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
     };
 }

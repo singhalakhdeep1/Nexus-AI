@@ -8,6 +8,7 @@
 // writes always go through use cases + entities.
 
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/types/database";
 
 export interface TaskViewModel {
     id: string;
@@ -45,7 +46,7 @@ export interface TaskListResult {
 }
 
 export class TaskQueries {
-    constructor(private readonly db: SupabaseClient) { }
+    constructor(private readonly db: SupabaseClient<any>) { }
 
     async list(query: TaskListQuery): Promise<TaskListResult> {
         const limit = Math.min(query.limit ?? 50, 100);
